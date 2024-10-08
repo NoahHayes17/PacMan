@@ -27,9 +27,10 @@ class Pacman:
         for i in possible_directions:
             if i == self.direction_request:
                 self.direction = self.direction_request
+        self.move_common()
 
+    def move_common(self):
         new_x = self.x
-
         new_y = self.y
         if self.direction == Direction.left:
             new_x = self.x - STEP
