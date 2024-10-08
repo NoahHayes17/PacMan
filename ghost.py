@@ -1,6 +1,7 @@
 import pygame
 from defs import *
 import random
+from pacman import *
 
 inky0_lookup = [
     [   0, 30, 30, 30 ], # Right 
@@ -61,17 +62,12 @@ clyde1_lookup = [
 sprite_lookup0 = [ inky0_lookup, pinky0_lookup, blinky0_lookup, clyde0_lookup]
 sprite_lookup1 = [ inky1_lookup, pinky1_lookup, blinky1_lookup, clyde1_lookup ]
 
-class Ghost:
+class Ghost(Pacman):
     def __init__(self, game_display, ghostName_lookup, maze, x, y, s1, s2, s3, s4):
-        self.game_display = game_display
+        Pacman.__init__(self, game_display, maze, s1, s2, s3, s4)
         self.name = ghostName_lookup
-        self.maze = maze
-        self.radius = (BLOCK_SIZE - 15.4)
         self.x = x
         self.y = y
-        self.direction = Direction.right
-        self.image = pygame.image.load("png/PacmanSprites.png")
-        self.selection = pygame.Rect(s1, s2, s3, s4)
         self.counter = 0
 
     def draw(self):
