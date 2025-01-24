@@ -74,10 +74,10 @@ def run_game():
     clyde_y = Y_OFFSET + (BLOCK_SIZE * 15) + GHOST_RADIUS
 
     ghosts = [
-        Ghost(game_display, GhostName.inky0, maze, inky_x, inky_y, 0, 30, 30, 30),
-        Ghost(game_display, GhostName.pinky0, maze, pinky_x, pinky_y, 0, 60, 30, 30),
-        Ghost(game_display, GhostName.blinky0, maze, blinky_x, blinky_y, 0, 90, 30, 30),
-        Ghost(game_display, GhostName.clyde0, maze, clyde_x, clyde_y, 0, 120, 30, 30)
+        Ghost(game_display, GhostName.inky0,   maze,   inky_x, inky_y,   0,  30, 30, 30),
+        Ghost(game_display, GhostName.pinky0,  maze,  pinky_x, pinky_y,  0,  60, 30, 30),
+        Ghost(game_display, GhostName.blinky0, maze, blinky_x, blinky_y, 0,  90, 30, 30),
+        Ghost(game_display, GhostName.clyde0,  maze,  clyde_x, clyde_y,  0, 120, 30, 30)
     ]
     
     clock = pygame.time.Clock()
@@ -109,7 +109,6 @@ def run_game():
         maze.draw_blocks()
         maze.draw_pellets()        
         pacman.draw()
-        
         for ghost in ghosts:
             ghost.draw()
             
@@ -130,6 +129,7 @@ def run_game():
         
     if game_state.game_over:
         show_game_over(game_display, game_state)  
+    
 
 if __name__ == "__main__":
     run_game()

@@ -59,8 +59,8 @@ clyde1_lookup = [
     [ 210, 120, 30, 30 ]  # Left
 ]
 
-sprite_lookup0 = [ inky0_lookup, pinky0_lookup, blinky0_lookup, clyde0_lookup]
-sprite_lookup1 = [ inky1_lookup, pinky1_lookup, blinky1_lookup, clyde1_lookup ]
+sprite_lookup0 = [inky0_lookup, pinky0_lookup, blinky0_lookup, clyde0_lookup]
+sprite_lookup1 = [inky1_lookup, pinky1_lookup, blinky1_lookup, clyde1_lookup ]
 
 class Ghost(Pacman):
     def __init__(self, game_display, ghostName_lookup, maze, x, y, s1, s2, s3, s4):
@@ -72,8 +72,7 @@ class Ghost(Pacman):
 
     def draw(self):
         self.counter = self.counter + 1
-        print(self.counter)
-        if (int(self.counter/5) % 2) == 0:
+        if (self.counter//10 % 2) == 0:
             self.selection = sprite_lookup0[self.name][self.direction]
         else:
             self.selection = sprite_lookup1[self.name][self.direction]

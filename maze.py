@@ -29,7 +29,6 @@ class Maze:
         self.eaten_list = []
 
         for y in range(0, len(self.maze)):
-            print(self.maze[y])
             for x in range(0, len(self.maze[y])):
                 if self.maze[y][x] == "B":
                    block_x = (x * BLOCK_SIZE) + X_OFFSET
@@ -44,67 +43,55 @@ class Maze:
                    self.pel.append(new_pel)
   
     def draw_blocks(self):
-        for b in self.blocks:
-            block_n = b
-            x = block_n.xpos
-            y = block_n.ypos
+        for block in self.blocks:
+            x = block.x
+            y = block.y
             pygame.draw.rect(self.game_display, pygame.Color("blue"), (x, y, BLOCK_SIZE, BLOCK_SIZE))
 
     def draw_pellets(self):
-        for p in self.pel:
-            pel_n = p 
-            x = pel_n.pel_x + (BLOCK_SIZE / 2)
-            y = pel_n.pel_y + (BLOCK_SIZE / 2)
+        for pell in self.pel:
+            x = pell.x + (BLOCK_SIZE / 2)
+            y = pell.y + (BLOCK_SIZE / 2)
             pygame.draw.circle(self.game_display, pygame.Color("white"), (x, y), PELL_SIZE)
         
-        for p in self.eaten_list:
-            pel_n = p
-            pel_x = pel_n.pel_x + (BLOCK_SIZE / 2)
-            pel_y = pel_n.pel_y + (BLOCK_SIZE / 2)
-            pygame.draw.rect(self.game_display, pygame.Color("black"), (pel_x - (BLOCK_SIZE / 2), pel_y - (BLOCK_SIZE / 2), BLOCK_SIZE, BLOCK_SIZE))
+        for pell in self.eaten_list:
+            x = pell.x + (BLOCK_SIZE / 2)
+            y = pell.y + (BLOCK_SIZE / 2)
+            pygame.draw.rect(self.game_display, pygame.Color("black"), (x - (BLOCK_SIZE / 2), y - (BLOCK_SIZE / 2), BLOCK_SIZE, BLOCK_SIZE))
 
     def is_eaten(self, pac_x, pac_y, pac_rad):
-        for p in self.pel:
-            pel_n = p
-            pel_x = pel_n.pel_x + (BLOCK_SIZE / 2)
-            pel_y = pel_n.pel_y + (BLOCK_SIZE / 2)
-            pac_x = pac_x
-            pac_y = pac_y
-            pac_rad = pac_rad
+        for pell in self.pel:
+            x = pell.x + (BLOCK_SIZE / 2)
+            y = pell.y + (BLOCK_SIZE / 2)
 
-            if (pac_x - pac_rad <= pel_x <= pac_x + pac_rad) and (pac_y - pac_rad <= pel_y <= pac_y + pac_rad):
-                if not p in self.eaten_list:
-                    self.eaten_list.append(p)
+            if (pac_x - pac_rad <= x <= pac_x + pac_rad) and (pac_y - pac_rad <= y <= pac_y + pac_rad):
+                if not pell in self.eaten_list:
+                    self.eaten_list.append(pell)
                     self.game_state.score += 1
-                print(len(self.eaten_list))
 
     def is_colliding(self, x, y, r, direction):
-        list_of_detected_collisions = []
         fudge = 1
-
-        for b in self.blocks:
-            block_n = b
-            block_x = block_n.xpos
-            block_y = block_n.ypos
-            pac_x = x
-            pac_y = y
-            pac_rad = r
-
+        
+        for block in self.blocks:
             if direction == Direction.left:
-              if ((block_x + fudge< pac_x - pac_rad < block_x + BLOCK_SIZE) and ((block_y < pac_y - pac_rad < block_y + BLOCK_SIZE) or (block_y < pac_y + pac_rad < block_y + BLOCK_SIZE))):
-                  list_of_detected_collisions.append(" collided with left ")
+                if block.x + fudge < x - r < block.x + BLOCK_SIZE and \
+                   (block.y < y - r < block.y + BLOCK_SIZE or 
+                    block.y < y + r < block.y + BLOCK_SIZE):
+                    return True
             elif direction == Direction.right:
-              if ((block_x < pac_x + pac_rad < block_x + BLOCK_SIZE) and ((block_y < pac_y - pac_rad < block_y + BLOCK_SIZE) or (block_y < pac_y + pac_rad < block_y + BLOCK_SIZE))):
-                  list_of_detected_collisions.append(" collided with right ")
+                if block.x < x + r < block.x + BLOCK_SIZE and \
+                   (block.y < y - r < block.y + BLOCK_SIZE or 
+                    block.y < y + r < block.y + BLOCK_SIZE):
+                    return True
             elif direction == Direction.up:
-              if ((block_y < pac_y - pac_rad < block_y + BLOCK_SIZE) and ((block_x < pac_x - pac_rad < block_x + BLOCK_SIZE) or (block_x < pac_x + pac_rad < block_x + BLOCK_SIZE))):
-                  list_of_detected_collisions.append(" collided with up ")
+                if block.y < y - r < block.y + BLOCK_SIZE and \
+                   (block.x < x - r < block.x + BLOCK_SIZE or 
+                    block.x < x + r < block.x + BLOCK_SIZE):
+                    return True
             elif direction == Direction.down:
-              if ((block_y < pac_y + pac_rad < block_y + BLOCK_SIZE) and ((block_x < pac_x - pac_rad < block_x + BLOCK_SIZE) or (block_x < pac_x + pac_rad < block_x + BLOCK_SIZE))):
-                  list_of_detected_collisions.append(" collided with down ")
-
-        for i in list_of_detected_collisions:
-            if i == "collided with left" or "collided with right" or "collided with up" or "collided with down":
-              return True
-        else:
-            return False
+                if block.y < y + r < block.y + BLOCK_SIZE and \
+                   (block.x < x - r < block.x + BLOCK_SIZE or 
+                    block.x < x + r < block.x + BLOCK_SIZE):
+                    return True
+        
+        return False
