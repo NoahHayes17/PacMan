@@ -63,11 +63,14 @@ class Maze:
         for pell in self.pel:
             x = pell.x + (BLOCK_SIZE / 2)
             y = pell.y + (BLOCK_SIZE / 2)
-
+    
             if (pac_x - pac_rad <= x <= pac_x + pac_rad) and (pac_y - pac_rad <= y <= pac_y + pac_rad):
                 if not pell in self.eaten_list:
                     self.eaten_list.append(pell)
                     self.game_state.score += 1
+                    
+        if len(self.eaten_list) == len(self.pel):
+            self.game_state.game_won = True
 
     def is_colliding(self, x, y, r, direction):
         fudge = 1

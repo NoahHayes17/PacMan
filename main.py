@@ -25,16 +25,16 @@ def check_collisions(pacman, ghosts):
             return True
     return False
 
-def show_game_over(game_display, game_state): 
+def show_game_message(game_display, game_state, message, color, delay=2000):
     overlay = pygame.Surface((DISPLAY_W, DISPLAY_H))
     overlay.fill((0, 0, 0))
     overlay.set_alpha(128)
     game_display.blit(overlay, (0, 0))
     
     font = pygame.font.SysFont("monospace", 64)
-    game_over_text = font.render("GAME OVER", True, (255, 0, 0))
-    text_rect = game_over_text.get_rect(center=(DISPLAY_W/2, DISPLAY_H/2))
-    game_display.blit(game_over_text, text_rect)
+    message_text = font.render(message, True, color)
+    text_rect = message_text.get_rect(center=(DISPLAY_W/2, DISPLAY_H/2))
+    game_display.blit(message_text, text_rect)
     
     score_font = pygame.font.SysFont("monospace", 32)
     score_text = score_font.render(f"Final Score: {game_state.score}", True, (255, 255, 255))
@@ -42,8 +42,13 @@ def show_game_over(game_display, game_state):
     game_display.blit(score_text, score_rect)
     
     pygame.display.update()
+    pygame.time.wait(delay)
+
+def show_game_over(game_display, game_state):
+    show_game_message(game_display, game_state, "GAME OVER", (255, 0, 0))
     
-    pygame.time.wait(2000)
+def show_win_screen(game_display, game_state):
+    show_game_message(game_display, game_state, "YOU WIN!", (255, 255, 0))
 
 def run_game():
     pygame.init()
@@ -84,7 +89,7 @@ def run_game():
     dt = 0
     game_time = 0
 
-    while running and not game_state.game_over:
+    while running and not game_state.game_over and not game_state.game_won:
         dt = clock.tick(FPS)
         game_time += dt
 
@@ -126,6 +131,11 @@ def run_game():
                              (30 + i * 25, DISPLAY_H - 30), 10)
 
         pygame.display.update()
+    
+    if game_state.game_won:
+        show_win_screen(game_display, game_state)
+    elif game_state.game_over:
+        show_game_over(game_display, game_state)
         
     if game_state.game_over:
         show_game_over(game_display, game_state)  

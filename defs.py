@@ -13,7 +13,7 @@ PELL_SIZE = 2.5
 GHOST_RADIUS = BLOCK_SIZE - 15.4
 
 # Pacman and ghost move by one step
-STEP = 1.5
+STEP = 1.0
 
 DATA_FONT_SIZE = 18
 DATA_FONT_COLOR =  (140,140,140)
@@ -41,6 +41,7 @@ class GameState:
         self.lives = 3
         self.score = 0
         self.game_over = False
+        self.game_won = False
 
 # Absolute values, not multiplied by dt otherwise the fleet loses sync
 INVADER_HORIZONTAL_SPEED = 12

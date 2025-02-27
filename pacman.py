@@ -12,9 +12,44 @@ class Pacman:
         self.direction_request = Direction.right
         self.image = pygame.image.load("png/PacmanSprites.png")
         self.selection = pygame.Rect(s1, s2, s3, s4)
+        self.animation_counter = 0
+        self.animation_frames = [
+            pygame.Rect(0, 0, 30, 30),    # Mouth fully open
+            pygame.Rect(30, 0, 30, 30),   # Mouth partially open
+            pygame.Rect(60, 0, 30, 30)    # Mouth closed
+        ]
+        self.moving = False
 
     def draw(self):
-        self.game_display.blit(self.image, (self.x-GHOST_RADIUS, self.y-GHOST_RADIUS), self.selection)
+        if self.moving:
+            self.animation_counter = (self.animation_counter + 1) % 25
+            if self.animation_counter < 10:
+                frame = 0  # Mouth fully open
+            elif self.animation_counter < 20:
+                frame = 1  # Mouth half open
+            else:
+                frame = 2  # Mouth closed
+        else:
+            frame = 0 
+        
+        # Select the correct animation frame and rotate based on direction
+        self.selection = self.animation_frames[frame]
+        
+        # Create a surface with the Pacman sprite
+        pacman_surface = pygame.Surface((30, 30), pygame.SRCALPHA)
+        pacman_surface.blit(self.image, (0, 0), self.selection)
+        
+        # Rotate based on direction
+        if self.direction == Direction.right:
+            rotated_surface = pacman_surface  # No rotation
+        elif self.direction == Direction.left:
+            rotated_surface = pygame.transform.rotate(pacman_surface, 180)
+        elif self.direction == Direction.up:
+            rotated_surface = pygame.transform.rotate(pacman_surface, 90)
+        elif self.direction == Direction.down:
+            rotated_surface = pygame.transform.rotate(pacman_surface, 270)
+            
+        self.game_display.blit(rotated_surface, (self.x-self.radius, self.y-self.radius))
         self.move()
         self.maze.is_eaten(self.x, self.y, self.radius)
 
@@ -24,7 +59,11 @@ class Pacman:
         for i in possible_directions:
             if i == self.direction_request:
                 self.direction = self.direction_request
+                
+        old_x, old_y = self.x, self.y
         self.move_common()
+        # Check if Pacman actually moved
+        self.moving = (old_x != self.x or old_y != self.y)
 
     def move_common(self):
         new_x = self.x
